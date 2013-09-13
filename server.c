@@ -194,6 +194,8 @@ server_start(int lockfd, char *lockfile)
 	evtimer_set(&server_ev_second, server_second_callback, NULL);
 	evtimer_add(&server_ev_second, &tv);
 
+	gn_init();
+
 	set_signals(server_signal_callback);
 	server_loop();
 	exit(0);

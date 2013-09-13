@@ -333,7 +333,6 @@ int
 session_next(struct session *s, int alert)
 {
 	struct winlink	*wl;
-
 	if (s->curw == NULL)
 		return (-1);
 
@@ -412,6 +411,8 @@ session_set_current(struct session *s, struct winlink *wl)
 		return (-1);
 	if (wl == s->curw)
 		return (1);
+
+	gn_session_set_current(s, wl);
 
 	winlink_stack_remove(&s->lastw, wl);
 	winlink_stack_push(&s->lastw, s->curw);

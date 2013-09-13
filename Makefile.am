@@ -26,7 +26,7 @@ endif
 if IS_GCC
 CFLAGS += -std=gnu99
 if IS_DEBUG
-CFLAGS += -O0 -g
+CFLAGS += -ggdb3
 CFLAGS += -Wno-long-long -Wall -W -Wnested-externs -Wformat=2
 CFLAGS += -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations
 CFLAGS += -Wwrite-strings -Wshadow -Wpointer-arith -Wsign-compare
@@ -146,6 +146,7 @@ dist_tmux_SOURCES = \
 	control-notify.c \
 	environ.c \
 	format.c \
+	global-notify.c \
 	grid-cell.c \
 	grid-view.c \
 	grid.c \

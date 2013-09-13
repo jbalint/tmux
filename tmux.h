@@ -2366,4 +2366,8 @@ int		 xvasprintf(char **, const char *, va_list);
 int printflike3	 xsnprintf(char *, size_t, const char *, ...);
 int		 xvsnprintf(char *, size_t, const char *, va_list);
 
+/* global-notify.c */
+void gn_init(void);
+void gn_session_set_current(struct session *s, struct winlink *wl);
+
 #endif /* TMUX_H */
