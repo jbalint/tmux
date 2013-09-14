@@ -39,6 +39,13 @@ void gn_open_pipes()
 	log_debug("Global notify accept cannot any new connections. Cannot stat(%s): %s",
 			  gn_pipe_path, strerror(errno));
 	return;
+  } else if (statrc && errno == ENOENT) {
+	/* create pipe if non-existing */
+	if (mkfifo(gn_pipe_path, S_IRUSR | S_IWUSR)) {
+	  log_debug("Global notify cannot accept any new connections. Cannot mkfifo(%s): %s",
+				gn_pipe_path, strerror(errno));
+	  return;
+	}
   }
 
   for (;;) { /* TODO useless to loop here.. multiple opens this fast won't be fruitful */
@@ -97,11 +104,18 @@ void gn_init()
 
 void gn_session_set_current(struct session *s, struct winlink *wl)
 {
+  const char *session_name = s->name;
+  const char *window_name = wl->window->name;
+  const int window_id = wl->window->id;
+  /* const char *pane_cmd = wl->window->active->cmd; */
+  const char *pane_shell = wl->window->active->shell;
+  const char *pane_cwd = wl->window->active->cwd;
   gn_open_pipes();
   for (int i = 0; i < MAX_PIPES; ++i) {
 	if (pipes[i]) {
-	  if (0 > fprintf(pipes[i], "session_set_current %s %s %d\n",
-					  s->name, wl->window->name, wl->window->id)) {
+	  if (0 > fprintf(pipes[i], "session_set_current %s %s %d (shell=%s,cwd=%s)\n",
+					  session_name, window_name, window_id,
+					  pane_shell, pane_cwd)) {
 		log_debug("Global notify error writing to pipe[%d]. Closing.", i);
 		fclose(pipes[i]);
 		pipes[i] = NULL;
