@@ -96,6 +96,11 @@ void gn_open_pipes()
 
 void gn_init()
 {
+  if (mkfifo(gn_pipe_path, S_IRUSR | S_IWUSR)) {
+	log_debug("Global notify: cannot mkfifo(%s): %s",
+			  gn_pipe_path, strerror(errno));
+	return;
+  }
   for (int i = 0; i < MAX_PIPES; ++i) {
 	pipes[i] = NULL;
   }
